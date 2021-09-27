@@ -6,13 +6,15 @@ import com.itproger.models.User;
 import com.itproger.repo.ReviewRepository;
 import com.itproger.repo.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Optional;
@@ -110,43 +112,57 @@ public class MainController {
 
     }
 
+    // Отслеживаем переход на страницу /user/
+    // В функции получаем зарегистрированного пользователя
+    @GetMapping("/user/")
+    public String user(Principal principal, Model model) {
+        // Находим пользвоателя по имени авторизованого пользователя
+        User user = userRepository.findByUsername(principal.getName());
 
-    @RequestMapping(value="/user/", method = RequestMethod.GET)
-        public String user (User userForm, Model model){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String name = auth.getName();
-        userForm =userRepository.findByUsername(name);
-        model.addAttribute("username", userForm.getUsername());
-        model.addAttribute("email", userForm.getEmail());
-        model.addAttribute("password",userForm.getPassword() );
-        model.addAttribute("user", Role.USER);
-        model.addAttribute("admin", Role.ADMIN);
-        model.addAttribute("redactor", Role.REDACTOR);
-
-        return "/user";
+        // Передаем данные про авторизованого пользователя в шаблон
+        // Там они будут выведены в форме
+        model.addAttribute("username", user.getUsername());
+        model.addAttribute("email", user.getEmail());
+        model.addAttribute("role", user.getRoles());
+        return "user";
     }
 
-@PostMapping("/user/")
-public String Submit ( User userForm, Model model)  {
-    User user = new User();
-    user.setEnabled(true);
-    user.setUsername(userForm.getUsername());
-    user.setEmail(userForm.getEmail());
-    user.setPassword(userForm.getPassword());
-//    if( role.equals(Role.USER)){
-//        user.setRoles(Collections.singleton(Role.USER));
-//    }
-//    else if( role.equals(Role.ADMIN)){
-//        user.setRoles(Collections.singleton(Role.ADMIN));
-//    }
-//    else if( role.equals(Role.REDACTOR)){
-//        user.setRoles(Collections.singleton(Role.REDACTOR));
-//    }
+    // Обработка данных из формы
+    @PostMapping("/user/")
+    public String updateUser(Principal principal, User userForm, Model model) {
+        // Находим пользвоателя по имени авторизованого пользователя
+        User user = userRepository.findByUsername(principal.getName());
+        // Устанавливаем для этого пользователя новые данные
+        user.setEmail(userForm.getEmail());
+        user.setPassword(userForm.getPassword());
+        user.setRoles(userForm.getRoles());
 
-    userRepository.save(user);
+        // Сохраняем (обновляем) данные про пользователя
+        userRepository.save(user);
+        // Выполняем редирект
+        return "redirect:/user/";
+    }
+    @GetMapping("/admin")
+    public String adminPanel(User user, Model model) {
+        Iterable<User> users = userRepository.findAll();
+        model.addAttribute("us",users );
 
-    return "redirect:/user/";
-}
+        return "/admin";
+    }
+    @GetMapping("/admin/{name}/{id}")
+    public String adminInfo(@PathVariable(value = "name") String name,@PathVariable(value = "id") long id,  Model model) {
+
+        Optional<User> us = Optional.ofNullable(userRepository.findByUsername(name));
+        Optional<Review> review = reviewRepository.findById(id);
+        ArrayList<Review> result = new ArrayList<>();
+        review.ifPresent(result::add);
+        model.addAttribute("review", result);
+
+
+        model.addAttribute("review", us);
+        return "admin_info";
+
+    }
 
 
 

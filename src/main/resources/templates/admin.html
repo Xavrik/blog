@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html  xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${title}"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link rel = "stylesheet" href="/css/bootstrap.css">
+    <link rel = "stylesheet" href="/css/main.css">
+</head>
+<body>
+<header th:insert="blocks/header :: header"/>
+
+<div class="container mt-5">
+
+    <h3 class="mt-2">Все пользователи</h3>
+    <div class="p-3 mb-2 bg-info text-white" th:each="row : ${us}">
+        <h1><b>Пользователь: </b><span th:text="${row.username}"/></h1>
+        <p><b>Email: </b><span th:text="${row.email}"/><b> Роль на сайте: </b><span th:text="${row.roles}"/></p>
+        <a class="btn btn-warning" th:href="@{/admin/} + ${row.username} + '/'+ ${row.id}">Детальнее</a>
+    </div>
+    <h1 class="mt-5" th:text="${title}"/>
+
+
+
+</div>
+<div th:replace = "blocks/footer :: footer "></div>
+
+
+</p>
+
+
+</body>
+</html>

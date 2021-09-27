@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Главная страница</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <script type="text/javascript" src="/css/util.js"></script>
+    <script type="text/javascript" src="/css/popover.js"></script>
+
+    <link rel = "stylesheet" href="/css/bootstrap.css">
+    <link rel = "stylesheet" href="/css/main.css">
+
+
+
+</head>
+<body>
+<header th:insert="blocks/header :: header"/>
+
+<main class="container">
+    <h1>Кабинет пользователя </h1>
+
+    <form  method="post">
+        <input type="hidden"value = {{username}} name="username" class="form-control" placeholder={{username}}><br>
+        <input type="text"value = {{email}} name="email" class="form-control" placeholder={{email}}><br>
+          <input type="text" value = {{password}} name="password" class="form-control" placeholder={{password}}><br>
+
+        <select id = "role" name = "country" class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <option value = {{user}}>Пользователь</option>
+
+            <option value = {{admin}} class="dropdown-item">Администратор</option>
+            <option value = {{redactor}} class="dropdown-item">Редактор</option>
+
+        </select>
+        <br><br><br>
+        <input type="hidden" name ="_csrf" value="{{_csrf.token}}">
+
+
+        <input type="submit" value="Обновить данные" class="btn btn-success" href="/user/">
+    </form>
+
+
+</main>
+<div th:replace = "blocks/footer :: footer "></div>
+
+
+</body>
+</html>

@@ -57,5 +57,10 @@ public class Review {
         this.text = text;
         this.author = user;
     }
+    public Review(User user) {
+
+        this.author = user;
+    }
+
 
 }

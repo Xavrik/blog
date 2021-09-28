@@ -18,9 +18,16 @@
         </div>
         <div sec:authorize="isFullyAuthenticated()">
           <!--  <div sec:authorize="hasRole('ADMIN')"> -->
-            <!--  <div sec:authorize="hasAythority('USER')"> -->
+            <!--  <div sec:authorize="hasAuthority('USER')"> -->
             <form th:action="@{/logout}" method="post">
-                <input type="submit"class="btn btn-danger" value="Выйти"/>
+                <input type="submit"class="btn btn-danger mr-1" value="Выйти"/>
+            </form>
+        </div>
+
+
+             <div sec:authorize="hasAuthority('ADMIN')">
+            <form th:action="@{/admin}" method="get">
+                <input type="submit"class="btn btn-info mr-1" value="Панель Администратора"/>
             </form>
         </div>
     </div>

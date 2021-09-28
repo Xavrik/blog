@@ -152,15 +152,12 @@ public class MainController {
     @GetMapping("/admin/{name}/{id}")
     public String adminInfo(@PathVariable(value = "name") String name,@PathVariable(value = "id") long id,  Model model) {
 
-        Optional<User> us = Optional.ofNullable(userRepository.findByUsername(name));
-        Optional<Review> review = reviewRepository.findById(id);
-        ArrayList<Review> result = new ArrayList<>();
-        review.ifPresent(result::add);
-        model.addAttribute("review", result);
+        User us = userRepository.findByUsername(name);
 
+        Iterable<Review> rev = reviewRepository.findAll();
+        model.addAttribute("us",rev);
 
-        model.addAttribute("review", us);
-        return "admin_info";
+        return "/admin_info";
 
     }
 

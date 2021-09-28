@@ -36,6 +36,9 @@ public class User implements UserDetails {
     private String password ,email;
     private  boolean enabled;
 
+
+
+
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
@@ -62,6 +65,8 @@ public class User implements UserDetails {
     public boolean isAccountNonLocked() {
         return true;
     }
+
+
 
     @Override
     public boolean isCredentialsNonExpired() {
